@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bình Dương - Performance Report 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6C00;
+            --primary-light: #FF8C33;
+            --primary-dark: #E55A00;
+            --secondary: #059669;
+            --success: #059669;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --bg: #FFF7ED;
+            --card-bg: #FFFFFF;
+            --text: #1F2937;
+            --text-muted: #6B7280;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #FFEDD5 100%);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container { max-width: 1400px; margin: 0 auto; }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border-radius: 20px;
+            padding: 40px;
+            color: white;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(255, 108, 0, 0.3);
+        }
+        
+        .header h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .header-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .header-stat {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header-stat .value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .header-stat .label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .header-stat .change {
+            font-size: 0.85rem;
+            margin-top: 8px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+        
+        .change.positive { background: rgba(5, 150, 105, 0.3); }
+        .change.negative { background: rgba(220, 38, 38, 0.3); }
+        
+        /* Sections */
+        .section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+        
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #FFEDD5;
+        }
+        
+        /* District Visualization */
+        .district-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .district-bar-row {
+            display: grid;
+            grid-template-columns: 140px 1fr 80px 80px 80px;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .district-bar-row:last-child { border-bottom: none; }
+        
+        .district-name {
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        
+        .bar-container {
+            height: 26px;
+            background: #F3F4F6;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            min-width: 55px;
+        }
+        
+        .bar-fill.excellent { background: linear-gradient(90deg, var(--success) 0%, #10B981 100%); }
+        .bar-fill.good { background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%); }
+        .bar-fill.warning { background: linear-gradient(90deg, var(--warning) 0%, #FBBF24 100%); }
+        .bar-fill.danger { background: linear-gradient(90deg, var(--danger) 0%, #F87171 100%); }
+        
+        .fr-value {
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+        
+        .legend-bar {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #F9FAFB;
+            border-radius: 8px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 12px;
+            border-radius: 3px;
+        }
+        
+        /* Grid layouts */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        
+        .persona-card {
+            background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid #FFEDD5;
+        }
+        
+        .persona-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+        
+        .sample-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+        
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .ranking-item:last-child { border-bottom: none; }
+        
+        .rank {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .rank.top3 { background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); }
+        
+        .item-name {
+            flex: 1;
+            font-size: 0.85rem;
+        }
+        
+        .item-value {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--primary);
+            margin-right: 8px;
+        }
+        
+        .item-growth {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+        
+        .item-growth.positive { background: #D1FAE5; color: #065F46; }
+        .item-growth.negative { background: #FEE2E2; color: #991B1B; }
+        
+        /* YoY Table */
+        .yoy-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+        
+        .yoy-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 10px 6px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .yoy-table th:first-child { border-radius: 8px 0 0 0; }
+        .yoy-table th:last-child { border-radius: 0 8px 0 0; }
+        
+        .yoy-table td {
+            padding: 8px 6px;
+            border-bottom: 1px solid #F3F4F6;
+        }
+        
+        .yoy-table tr:hover { background: #FFF7ED; }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .header-stats { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: 1fr; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏭 BÌNH DƯƠNG - PERFORMANCE 2025</h1>
+            <p class="subtitle">Báo cáo hiệu suất vận hành | 2025</p>
+            
+            <div class="header-stats">
+                <div class="header-stat">
+                    <div class="value">27.5B</div>
+                    <div class="label">Tổng GSV (VNĐ)</div>
+                    <div class="change positive">Active Market</div>
+                </div>
+                <div class="header-stat">
+                    <div class="value">304K</div>
+                    <div class="label">Tổng đơn hàng</div>
+                    <div class="change positive">All Services</div>
+                </div>
+                <div class="header-stat">
+                    <div class="value">35,600</div>
+                    <div class="label">Active Users</div>
+                    <div class="change positive">Growing Base</div>
+                </div>
+                <div class="header-stat">
+                    <div class="value">90.5K</div>
+                    <div class="label">AOV Trung bình</div>
+                    <div class="change positive">High Value</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Mix 2025 -->
+        <div class="section">
+            <h2 class="section-title">🚀 Service Mix 2025</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <!-- Bike Service (2Ws) -->
+                <div style="background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border-radius: 16px; padding: 25px; border: 2px solid var(--primary);">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div style="font-size: 3rem;">🏍️</div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted);">BIKE SERVICE (2Ws)</div>
+                            <div style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--primary);">14.8B</div>
+                            <div style="font-size: 0.85rem; color: var(--success); font-weight: 600;">1H + 2H + 4H + Intercity</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #FFD9B3;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--primary);">53.8%</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">GSV Share</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700;">267K</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Orders</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700;">55.4K</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Avg AOV</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Truck Service (4Ws) -->
+                <div style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-radius: 16px; padding: 25px; border: 2px solid var(--success);">
+                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                        <div style="font-size: 3rem;">🚚</div>
+                        <div>
+                            <div style="font-size: 0.9rem; color: var(--text-muted);">TRUCK SERVICE (4Ws)</div>
+                            <div style="font-family: 'Space Grotesk', sans-serif; font-size: 2.2rem; font-weight: 700; color: var(--success);">12.7B</div>
+                            <div style="font-size: 0.85rem; color: var(--success); font-weight: 600;">High Value Segment</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid #86EFAC;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700; color: var(--success);">46.2%</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">GSV Share</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700;">37K</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">Orders</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.3rem; font-weight: 700;">340K</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">AOV</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Visual Bar -->
+            <div style="margin-top: 25px;">
+                <div style="display: flex; height: 40px; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="width: 53.8%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                        🏍️ Bike 53.8%
+                    </div>
+                    <div style="width: 46.2%; background: linear-gradient(90deg, var(--success) 0%, #10B981 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">
+                        🚚 Truck 46.2%
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Bike: 14.8B VNĐ (267K orders)</span>
+                    <span>Truck: 12.7B VNĐ (37K orders)</span>
+                </div>
+            </div>
+            
+            <!-- Truck Highlight Badge -->
+            <div style="margin-top: 20px; background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 12px; padding: 15px; display: flex; align-items: center; justify-content: center; gap: 15px;">
+                <div style="font-size: 2rem;">🏆</div>
+                <div>
+                    <div style="font-weight: 700; color: #065F46; font-size: 1.1rem;">TRUCK POWERHOUSE</div>
+                    <div style="font-size: 0.85rem; color: #047857;">Truck chiếm <strong>46.2%</strong> GSV - Thị trường công nghiệp mạnh, AOV cao <strong>340K/đơn</strong></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Service Breakdown Detail -->
+        <div class="section">
+            <h2 class="section-title">📊 Chi tiết theo Dịch vụ</h2>
+            
+            <table class="yoy-table">
+                <thead>
+                    <tr>
+                        <th>Dịch vụ</th>
+                        <th>GSV</th>
+                        <th>Volume</th>
+                        <th>AOV</th>
+                        <th>GSV Share</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>🏍️ 1H (Giao nhanh 1 giờ)</strong></td>
+                        <td><strong>12.6B</strong></td>
+                        <td>218K</td>
+                        <td>57,500</td>
+                        <td>45.8%</td>
+                    </tr>
+                    <tr>
+                        <td>🚴 2H (Giao trong 2 giờ)</td>
+                        <td>1.9B</td>
+                        <td>39K</td>
+                        <td>50,400</td>
+                        <td>6.9%</td>
+                    </tr>
+                    <tr>
+                        <td>📦 4H (Giao trong 4 giờ)</td>
+                        <td>170M</td>
+                        <td>5K</td>
+                        <td>31,200</td>
+                        <td>0.6%</td>
+                    </tr>
+                    <tr>
+                        <td>🛣️ Intercity (Liên tỉnh)</td>
+                        <td>152M</td>
+                        <td>5K</td>
+                        <td>~30,400</td>
+                        <td>0.6%</td>
+                    </tr>
+                    <tr style="background: #F0FDF4;">
+                        <td><strong>🚚 Truck (Van/Xe tải)</strong></td>
+                        <td><strong>12.7B</strong></td>
+                        <td>37K</td>
+                        <td><strong>340,000</strong></td>
+                        <td><strong>46.2%</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #FFF7ED; border-radius: 10px; border-left: 4px solid var(--primary);">
+                <div style="font-size: 0.9rem;">
+                    <strong>💡 Key Insight:</strong> Dịch vụ <strong>1H</strong> dẫn đầu về volume (218K đơn) nhưng <strong>Truck</strong> gần bằng về GSV (12.7B) với AOV cao hơn <strong>6x</strong> (340K vs 57.5K)
+                </div>
+            </div>
+        </div>
+        
+        <!-- District Performance by Service - 1H -->
+        <div class="section">
+            <h2 class="section-title">🗺️ Hiệu suất theo Phường - Dịch vụ 1H</h2>
+            <p style="color: var(--text-muted); margin-bottom: 20px; font-size: 0.9rem;">
+                Xếp hạng theo Volume đơn hàng | Màu sắc thể hiện FR performance
+            </p>
+            
+            <div class="district-bars">
+                <div class="district-bar-row" style="font-weight: 600; font-size: 0.75rem; color: var(--text-muted);">
+                    <div>Phường/Xã</div>
+                    <div>Volume</div>
+                    <div style="text-align: center;">AR</div>
+                    <div style="text-align: center;">FR</div>
+                    <div style="text-align: center;">Quận</div>
+                </div>
+                
+                <!-- Top 1: Dĩ An -->
+                <div class="district-bar-row">
+                    <div class="district-name">1. Dĩ An 🥇</div>
+                    <div class="bar-container"><div class="bar-fill warning" style="width: 100%;">50K</div></div>
+                    <div class="fr-value" style="color: var(--success);">88.5%</div>
+                    <div class="fr-value" style="color: var(--warning);">75.3%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">Dĩ An</div>
+                </div>
+                
+                <!-- Top 2: Phú Lợi - Best FR -->
+                <div class="district-bar-row">
+                    <div class="district-name">2. Phú Lợi 🥈</div>
+                    <div class="bar-container"><div class="bar-fill excellent" style="width: 82%;">41K</div></div>
+                    <div class="fr-value" style="color: var(--success);">94.2%</div>
+                    <div class="fr-value" style="color: var(--success);">82.2%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">TDM</div>
+                </div>
+                
+                <!-- Top 3: Thuận Giao -->
+                <div class="district-bar-row">
+                    <div class="district-name">3. Thuận Giao 🥉</div>
+                    <div class="bar-container"><div class="bar-fill danger" style="width: 46%;">23K</div></div>
+                    <div class="fr-value" style="color: var(--warning);">80.7%</div>
+                    <div class="fr-value" style="color: var(--danger);">67.7%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">T.An</div>
+                </div>
+                
+                <!-- Top 4: Đông Hoà -->
+                <div class="district-bar-row">
+                    <div class="district-name">4. Đông Hoà</div>
+                    <div class="bar-container"><div class="bar-fill warning" style="width: 44%;">22K</div></div>
+                    <div class="fr-value" style="color: var(--success);">87.1%</div>
+                    <div class="fr-value" style="color: var(--warning);">74.6%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">Dĩ An</div>
+                </div>
+                
+                <!-- Top 5: Thủ Dầu Một -->
+                <div class="district-bar-row">
+                    <div class="district-name">5. Thủ Dầu Một</div>
+                    <div class="bar-container"><div class="bar-fill excellent" style="width: 42%;">21K</div></div>
+                    <div class="fr-value" style="color: var(--success);">92.2%</div>
+                    <div class="fr-value" style="color: var(--success);">80.1%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">TDM</div>
+                </div>
+                
+                <!-- Top 6: Lái Thiêu -->
+                <div class="district-bar-row">
+                    <div class="district-name">6. Lái Thiêu</div>
+                    <div class="bar-container"><div class="bar-fill warning" style="width: 32%;">16K</div></div>
+                    <div class="fr-value" style="color: var(--success);">87.5%</div>
+                    <div class="fr-value" style="color: var(--warning);">73.3%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">T.An</div>
+                </div>
+                
+                <!-- Top 7: An Phú -->
+                <div class="district-bar-row">
+                    <div class="district-name">7. An Phú</div>
+                    <div class="bar-container"><div class="bar-fill warning" style="width: 30%;">15K</div></div>
+                    <div class="fr-value" style="color: var(--success);">88.4%</div>
+                    <div class="fr-value" style="color: var(--warning);">74.7%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">T.An</div>
+                </div>
+                
+                <!-- Top 8: Bình Hoà -->
+                <div class="district-bar-row">
+                    <div class="district-name">8. Bình Hoà</div>
+                    <div class="bar-container"><div class="bar-fill warning" style="width: 28%;">14K</div></div>
+                    <div class="fr-value" style="color: var(--success);">87.5%</div>
+                    <div class="fr-value" style="color: var(--warning);">73.7%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">T.An</div>
+                </div>
+                
+                <!-- Top 9: Tân Đông Hiệp -->
+                <div class="district-bar-row">
+                    <div class="district-name">9. Tân Đông Hiệp</div>
+                    <div class="bar-container"><div class="bar-fill danger" style="width: 18%;">9K</div></div>
+                    <div class="fr-value" style="color: var(--warning);">80.7%</div>
+                    <div class="fr-value" style="color: var(--danger);">69.4%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">Dĩ An</div>
+                </div>
+                
+                <!-- Top 10: Bình Dương -->
+                <div class="district-bar-row">
+                    <div class="district-name">10. Bình Dương</div>
+                    <div class="bar-container"><div class="bar-fill danger" style="width: 10%;">5K</div></div>
+                    <div class="fr-value" style="color: var(--warning);">79.1%</div>
+                    <div class="fr-value" style="color: var(--danger);">66.7%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">TDM</div>
+                </div>
+                
+                <!-- Top 11: Thuận An -->
+                <div class="district-bar-row">
+                    <div class="district-name">11. Thuận An</div>
+                    <div class="bar-container"><div class="bar-fill danger" style="width: 8%;">4K</div></div>
+                    <div class="fr-value" style="color: var(--warning);">82.5%</div>
+                    <div class="fr-value" style="color: var(--danger);">68.2%</div>
+                    <div style="text-align: center; font-size: 0.75rem;">T.An</div>
+                </div>
+            </div>
+            
+            <div class="legend-bar">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(90deg, var(--success) 0%, #10B981 100%);"></div>
+                    <span>Excellent: FR ≥80%</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(90deg, var(--warning) 0%, #FBBF24 100%);"></div>
+                    <span>Warning: FR 70-80%</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: linear-gradient(90deg, var(--danger) 0%, #F87171 100%);"></div>
+                    <span>Critical: FR &lt;70%</span>
+                </div>
+            </div>
+            
+            <!-- Insights Box -->
+            <div style="margin-top: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div style="background: #D1FAE5; border-radius: 10px; padding: 15px;">
+                    <div style="font-weight: 700; color: #065F46; margin-bottom: 8px;">✅ Top Performers (1H)</div>
+                    <div style="font-size: 0.85rem; color: #047857;">
+                        <strong>Phú Lợi</strong> (FR 82.2%, AR 94.2%) & <strong>Thủ Dầu Một</strong> (FR 80.1%, AR 92.2%) - TP. Thủ Dầu Một dẫn đầu về chất lượng
+                    </div>
+                </div>
+                <div style="background: #FEE2E2; border-radius: 10px; padding: 15px;">
+                    <div style="font-weight: 700; color: #991B1B; margin-bottom: 8px;">⚠️ Cần Cải thiện (1H)</div>
+                    <div style="font-size: 0.85rem; color: #7F1D1D;">
+                        <strong>Thuận Giao</strong> (FR 67.7%), <strong>Thuận An</strong> (FR 68.2%), <strong>Tân Đông Hiệp</strong> (FR 69.4%) - Volume cao nhưng FR thấp
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Multi-Service Comparison Table -->
+        <div class="section">
+            <h2 class="section-title">📋 So sánh Hiệu suất theo Dịch vụ & Phường</h2>
+            
+            <div style="overflow-x: auto;">
+                <table class="yoy-table" style="min-width: 900px;">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Quận</th>
+                            <th rowspan="2">Phường</th>
+                            <th colspan="3" style="text-align: center; background: var(--primary);">🏍️ 1H</th>
+                            <th colspan="3" style="text-align: center; background: #3B82F6;">🚴 2H</th>
+                            <th colspan="3" style="text-align: center; background: var(--success);">🚚 Truck</th>
+                        </tr>
+                        <tr>
+                            <th style="background: var(--primary-light);">Vol</th>
+                            <th style="background: var(--primary-light);">AR</th>
+                            <th style="background: var(--primary-light);">FR</th>
+                            <th style="background: #60A5FA;">Vol</th>
+                            <th style="background: #60A5FA;">AR</th>
+                            <th style="background: #60A5FA;">FR</th>
+                            <th style="background: #10B981;">Vol</th>
+                            <th style="background: #10B981;">AR</th>
+                            <th style="background: #10B981;">FR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="3"><strong>Dĩ An</strong></td>
+                            <td>Dĩ An</td>
+                            <td><strong>50K</strong></td>
+                            <td style="color: var(--success);">88.5%</td>
+                            <td style="color: var(--warning);">75.3%</td>
+                            <td>10K</td>
+                            <td>87.6%</td>
+                            <td style="color: var(--warning);">71.0%</td>
+                            <td>10K</td>
+                            <td style="color: var(--success);">90.7%</td>
+                            <td style="color: var(--danger);">57.5%</td>
+                        </tr>
+                        <tr>
+                            <td>Đông Hoà</td>
+                            <td>22K</td>
+                            <td>87.1%</td>
+                            <td style="color: var(--warning);">74.6%</td>
+                            <td>3K</td>
+                            <td style="color: var(--success);">89.2%</td>
+                            <td style="color: var(--warning);">72.4%</td>
+                            <td>5K</td>
+                            <td>86.1%</td>
+                            <td style="color: var(--danger);">54.9%</td>
+                        </tr>
+                        <tr>
+                            <td>Tân Đông Hiệp</td>
+                            <td>9K</td>
+                            <td style="color: var(--warning);">80.7%</td>
+                            <td style="color: var(--danger);">69.4%</td>
+                            <td>2K</td>
+                            <td>82.9%</td>
+                            <td style="color: var(--danger);">69.9%</td>
+                            <td>2K</td>
+                            <td style="color: var(--success);">90.7%</td>
+                            <td style="color: var(--danger);">55.8%</td>
+                        </tr>
+                        <tr style="background: #FFF7ED;">
+                            <td rowspan="5"><strong>Thuận An</strong></td>
+                            <td>Thuận Giao</td>
+                            <td>23K</td>
+                            <td style="color: var(--warning);">80.7%</td>
+                            <td style="color: var(--danger);">67.7%</td>
+                            <td>6K</td>
+                            <td>87.8%</td>
+                            <td style="color: var(--danger);">69.7%</td>
+                            <td>3K</td>
+                            <td style="color: var(--success);">90.0%</td>
+                            <td style="color: var(--danger);">57.7%</td>
+                        </tr>
+                        <tr style="background: #FFF7ED;">
+                            <td>Lái Thiêu</td>
+                            <td>16K</td>
+                            <td>87.5%</td>
+                            <td style="color: var(--warning);">73.3%</td>
+                            <td>3K</td>
+                            <td>88.4%</td>
+                            <td style="color: var(--warning);">72.6%</td>
+                            <td>4K</td>
+                            <td>87.2%</td>
+                            <td style="color: var(--danger);">54.0%</td>
+                        </tr>
+                        <tr style="background: #FFF7ED;">
+                            <td>An Phú</td>
+                            <td>15K</td>
+                            <td>88.4%</td>
+                            <td style="color: var(--warning);">74.7%</td>
+                            <td>4K</td>
+                            <td>88.6%</td>
+                            <td style="color: var(--warning);">73.3%</td>
+                            <td>3K</td>
+                            <td style="color: var(--success);">91.1%</td>
+                            <td style="color: var(--danger);">55.7%</td>
+                        </tr>
+                        <tr style="background: #FFF7ED;">
+                            <td>Bình Hoà</td>
+                            <td>14K</td>
+                            <td>87.5%</td>
+                            <td style="color: var(--warning);">73.7%</td>
+                            <td>3K</td>
+                            <td>87.8%</td>
+                            <td style="color: var(--warning);">71.4%</td>
+                            <td>4K</td>
+                            <td style="color: var(--success);">89.8%</td>
+                            <td style="color: var(--danger);">55.6%</td>
+                        </tr>
+                        <tr style="background: #FFF7ED;">
+                            <td>Thuận An</td>
+                            <td>4K</td>
+                            <td>82.5%</td>
+                            <td style="color: var(--danger);">68.2%</td>
+                            <td>1K</td>
+                            <td>84.3%</td>
+                            <td style="color: var(--danger);">69.3%</td>
+                            <td>1K</td>
+                            <td>85.8%</td>
+                            <td style="color: var(--danger);">53.5%</td>
+                        </tr>
+                        <tr style="background: #D1FAE5;">
+                            <td rowspan="2"><strong>Thủ Dầu Một</strong></td>
+                            <td><strong>Phú Lợi</strong></td>
+                            <td><strong>41K</strong></td>
+                            <td style="color: var(--success);"><strong>94.2%</strong></td>
+                            <td style="color: var(--success);"><strong>82.2%</strong></td>
+                            <td>4K</td>
+                            <td style="color: var(--success);">92.2%</td>
+                            <td style="color: var(--danger);">63.1%</td>
+                            <td>2K</td>
+                            <td>86.0%</td>
+                            <td style="color: var(--danger);">55.0%</td>
+                        </tr>
+                        <tr style="background: #D1FAE5;">
+                            <td><strong>Thủ Dầu Một</strong></td>
+                            <td>21K</td>
+                            <td style="color: var(--success);"><strong>92.2%</strong></td>
+                            <td style="color: var(--success);"><strong>80.1%</strong></td>
+                            <td>2K</td>
+                            <td style="color: var(--success);">91.9%</td>
+                            <td style="color: var(--warning);">71.7%</td>
+                            <td>1K</td>
+                            <td>83.4%</td>
+                            <td style="color: var(--danger);">55.2%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #FEF3C7; border-radius: 10px; border-left: 4px solid var(--warning);">
+                <div style="font-size: 0.9rem;">
+                    <strong>⚠️ Truck FR Alert:</strong> FR dịch vụ Truck rất thấp (53-58%) trên toàn bộ các phường - Cần phân tích nguyên nhân và cải thiện quy trình giao hàng xe tải
+                </div>
+            </div>
+        </div>
+        
+        <!-- Distance Analysis - 2Ws -->
+        <div class="section">
+            <h2 class="section-title">📍 Phân tích theo Khoảng cách - 2Ws (Bike)</h2>
+            
+            <div class="grid-2">
+                <!-- Left: Table -->
+                <div>
+                    <table class="yoy-table">
+                        <thead>
+                            <tr>
+                                <th>Khoảng cách</th>
+                                <th>Orders</th>
+                                <th>AR</th>
+                                <th>FR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: #FFF7ED;">
+                                <td><strong>📍 0-3km</strong><br><small style="color: var(--text-muted);">Nội thành</small></td>
+                                <td><strong>46K</strong></td>
+                                <td style="color: var(--success);">84.5%</td>
+                                <td style="color: var(--warning);">71.8%</td>
+                            </tr>
+                            <tr style="background: #FFF7ED;">
+                                <td><strong>📍 3-7km</strong><br><small style="color: var(--text-muted);">Liên phường</small></td>
+                                <td><strong>85K</strong></td>
+                                <td style="color: var(--success);">85.2%</td>
+                                <td style="color: var(--warning);">73.0%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 7-10km</strong><br><small style="color: var(--text-muted);">Liên quận</small></td>
+                                <td>38K</td>
+                                <td style="color: var(--success);">86.8%</td>
+                                <td style="color: var(--warning);">74.2%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 10-15km</strong><br><small style="color: var(--text-muted);">Xa</small></td>
+                                <td>38K</td>
+                                <td style="color: var(--success);">87.8%</td>
+                                <td style="color: var(--warning);">74.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 15-30km</strong><br><small style="color: var(--text-muted);">Liên tỉnh gần</small></td>
+                                <td>51K</td>
+                                <td style="color: var(--success);">89.8%</td>
+                                <td style="color: var(--warning);">73.2%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 30-40km</strong><br><small style="color: var(--text-muted);">Xa</small></td>
+                                <td>4.8K</td>
+                                <td style="color: var(--success);">87.0%</td>
+                                <td style="color: var(--danger);">66.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 >40km</strong><br><small style="color: var(--text-muted);">Liên tỉnh xa</small></td>
+                                <td>2.2K</td>
+                                <td style="color: var(--success);">86.5%</td>
+                                <td style="color: var(--danger);">62.8%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Right: Visual Summary -->
+                <div>
+                    <div style="background: linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 100%); border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+                        <div style="font-weight: 700; color: var(--primary); margin-bottom: 15px;">📊 Volume Distribution (2Ws)</div>
+                        
+                        <!-- Bar: 0-7km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">0-7km (Nội thành)</span>
+                                <span style="font-weight: 600;">131K <span style="color: var(--success); font-size: 0.75rem;">49.4%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 49.4%; height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: 7-15km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">7-15km (Liên quận)</span>
+                                <span style="font-weight: 600;">76K <span style="color: var(--success); font-size: 0.75rem;">28.7%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 28.7%; height: 100%; background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: 15-30km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">15-30km (Liên tỉnh gần)</span>
+                                <span style="font-weight: 600;">51K <span style="color: var(--success); font-size: 0.75rem;">19.2%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 19.2%; height: 100%; background: linear-gradient(90deg, var(--success) 0%, #10B981 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: >30km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">>30km (Liên tỉnh xa)</span>
+                                <span style="font-weight: 600;">7K <span style="color: var(--text-muted); font-size: 0.75rem;">2.6%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 2.6%; height: 100%; background: linear-gradient(90deg, #9CA3AF 0%, #D1D5DB 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FR Trend -->
+                    <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FEF9C3 100%); border-radius: 12px; padding: 15px;">
+                        <div style="font-weight: 700; color: #92400E; margin-bottom: 10px;">📉 FR Trend by Distance</div>
+                        <div style="font-size: 0.85rem; color: #78350F;">
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #FDE68A;">
+                                <span>0-30km</span>
+                                <span style="font-weight: 600; color: var(--warning);">71-75% FR</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                <span>>30km</span>
+                                <span style="font-weight: 600; color: var(--danger);">62-67% FR ⚠️</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Distance Analysis - 4Ws (Truck) -->
+        <div class="section">
+            <h2 class="section-title">📍 Phân tích theo Khoảng cách - 4Ws (Truck)</h2>
+            
+            <div class="grid-2">
+                <!-- Left: Table -->
+                <div>
+                    <table class="yoy-table">
+                        <thead>
+                            <tr>
+                                <th>Khoảng cách</th>
+                                <th>Orders</th>
+                                <th>AR</th>
+                                <th>FR</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>📍 0-3km</strong><br><small style="color: var(--text-muted);">Nội thành</small></td>
+                                <td>2.2K</td>
+                                <td style="color: var(--warning);">82.9%</td>
+                                <td style="color: var(--danger);">47.4%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 3-7km</strong><br><small style="color: var(--text-muted);">Liên phường</small></td>
+                                <td>4.7K</td>
+                                <td style="color: var(--success);">85.8%</td>
+                                <td style="color: var(--danger);">52.4%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 7-10km</strong><br><small style="color: var(--text-muted);">Liên quận</small></td>
+                                <td>3.5K</td>
+                                <td style="color: var(--success);">87.5%</td>
+                                <td style="color: var(--danger);">57.4%</td>
+                            </tr>
+                            <tr style="background: #FFF7ED;">
+                                <td><strong>📍 10-15km</strong><br><small style="color: var(--text-muted);">Xa</small></td>
+                                <td><strong>6.1K</strong></td>
+                                <td style="color: var(--success);">89.6%</td>
+                                <td style="color: var(--danger);">61.2%</td>
+                            </tr>
+                            <tr style="background: #FFF7ED;">
+                                <td><strong>📍 15-30km</strong><br><small style="color: var(--text-muted);">Liên tỉnh gần</small></td>
+                                <td><strong>15K</strong></td>
+                                <td style="color: var(--success);">88.7%</td>
+                                <td style="color: var(--danger);">57.4%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 30-40km</strong><br><small style="color: var(--text-muted);">Xa</small></td>
+                                <td>3.6K</td>
+                                <td style="color: var(--success);">85.4%</td>
+                                <td style="color: var(--danger);">53.5%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 >40km</strong><br><small style="color: var(--text-muted);">Liên tỉnh xa</small></td>
+                                <td>1.9K</td>
+                                <td style="color: var(--warning);">82.3%</td>
+                                <td style="color: var(--danger);">42.5%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Right: Visual Summary -->
+                <div>
+                    <div style="background: linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 100%); border-radius: 12px; padding: 20px; margin-bottom: 15px;">
+                        <div style="font-weight: 700; color: var(--success); margin-bottom: 15px;">📊 Volume Distribution (4Ws)</div>
+                        
+                        <!-- Bar: 15-30km - Peak -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">15-30km (Peak Zone) 🔥</span>
+                                <span style="font-weight: 600;">15K <span style="color: var(--success); font-size: 0.75rem;">40.5%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 40.5%; height: 100%; background: linear-gradient(90deg, var(--success) 0%, #10B981 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: 10-15km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">10-15km</span>
+                                <span style="font-weight: 600;">6.1K <span style="color: var(--success); font-size: 0.75rem;">16.4%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 16.4%; height: 100%; background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: 0-10km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">0-10km (Nội thành)</span>
+                                <span style="font-weight: 600;">10.4K <span style="color: var(--success); font-size: 0.75rem;">28.1%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 28.1%; height: 100%; background: linear-gradient(90deg, var(--primary) 0%, var(--primary-light) 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bar: >30km -->
+                        <div style="margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                                <span style="font-size: 0.85rem;">>30km</span>
+                                <span style="font-weight: 600;">5.5K <span style="color: var(--text-muted); font-size: 0.75rem;">14.9%</span></span>
+                            </div>
+                            <div style="height: 20px; background: #F3F4F6; border-radius: 10px; overflow: hidden;">
+                                <div style="width: 14.9%; height: 100%; background: linear-gradient(90deg, #9CA3AF 0%, #D1D5DB 100%); border-radius: 10px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- FR Alert -->
+                    <div style="background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border-radius: 12px; padding: 15px;">
+                        <div style="font-weight: 700; color: #991B1B; margin-bottom: 10px;">🚨 Critical FR Alert (4Ws)</div>
+                        <div style="font-size: 0.85rem; color: #7F1D1D;">
+                            <div style="margin-bottom: 8px;">FR toàn bộ khoảng cách đều <strong>&lt;62%</strong></div>
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid #FCA5A5;">
+                                <span>Best (10-15km)</span>
+                                <span style="font-weight: 600;">61.2% FR</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                <span>Worst (>40km)</span>
+                                <span style="font-weight: 600;">42.5% FR 🔴</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding: 15px; background: #FEE2E2; border-radius: 10px; border-left: 4px solid var(--danger);">
+                <div style="font-size: 0.9rem;">
+                    <strong>🚨 Truck Performance Crisis:</strong> FR dịch vụ 4Ws thấp đáng báo động (42-61%). Cần điều tra: (1) Capacity driver không đủ, (2) Thời gian xử lý hàng lâu, (3) Routing chưa tối ưu, (4) Customer không available nhận hàng
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vertical Distribution -->
+        <div class="section">
+            <h2 class="section-title">🏪 Phân bố theo Ngành hàng (Vertical)</h2>
+            
+            <div class="grid-2">
+                <div class="persona-card">
+                    <h4>📊 Top Verticals by Count</h4>
+                    <div class="sample-size">Tổng số đơn vị kinh doanh</div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank top3">1</div>
+                        <div class="item-name">🍜 F&B (Đồ ăn & Thức uống)</div>
+                        <div class="item-value">216</div>
+                        <div class="item-growth positive">43.5%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank top3">2</div>
+                        <div class="item-name">🏠 Housing & Lifestyle</div>
+                        <div class="item-value">176</div>
+                        <div class="item-growth positive">35.4%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank top3">3</div>
+                        <div class="item-name">👗 Fashion & Sport</div>
+                        <div class="item-value">25</div>
+                        <div class="item-growth positive">5.0%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">4</div>
+                        <div class="item-name">💄 Health & Beauty</div>
+                        <div class="item-value">20</div>
+                        <div class="item-growth positive">4.0%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">5</div>
+                        <div class="item-name">📱 Electronic</div>
+                        <div class="item-value">20</div>
+                        <div class="item-growth positive">4.0%</div>
+                    </div>
+                </div>
+                
+                <div class="persona-card">
+                    <h4>📈 Other Verticals</h4>
+                    <div class="sample-size">Các ngành hàng khác</div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">6</div>
+                        <div class="item-name">🚬 Cigarette</div>
+                        <div class="item-value">19</div>
+                        <div class="item-growth positive">3.8%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">7</div>
+                        <div class="item-name">🚗 Transportation</div>
+                        <div class="item-value">11</div>
+                        <div class="item-growth positive">2.2%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">8</div>
+                        <div class="item-name">🧪 Plastic & Chemicals</div>
+                        <div class="item-value">6</div>
+                        <div class="item-growth positive">1.2%</div>
+                    </div>
+                    
+                    <div class="ranking-item">
+                        <div class="rank">9</div>
+                        <div class="item-name">👶 Mother & Baby</div>
+                        <div class="item-value">5</div>
+                        <div class="item-growth positive">1.0%</div>
+                    </div>
+                    
+                    <div style="margin-top: 15px; padding: 12px; background: #FFF7ED; border-radius: 8px;">
+                        <div style="font-size: 0.85rem; color: var(--primary);">
+                            🏭 <strong>Đặc thù Bình Dương:</strong> Tập trung F&B (43.5%) + Housing & Lifestyle (35.4%) = <strong>78.9%</strong> thị trường
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Vertical Visual Bar -->
+            <div style="margin-top: 25px;">
+                <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 10px;">Tỷ trọng ngành hàng:</div>
+                <div style="display: flex; height: 30px; border-radius: 15px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <div style="width: 43.5%; background: linear-gradient(90deg, #FF6C00 0%, #FF8C33 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                        F&B 43.5%
+                    </div>
+                    <div style="width: 35.4%; background: linear-gradient(90deg, #3B82F6 0%, #60A5FA 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                        Housing 35.4%
+                    </div>
+                    <div style="width: 21.1%; background: linear-gradient(90deg, #9CA3AF 0%, #D1D5DB 100%); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600; font-size: 0.75rem;">
+                        Others 21.1%
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Items -->
+        <div class="section">
+            <h2 class="section-title">🎯 Khuyến nghị Hành động</h2>
+            
+            <div class="grid-3">
+                <div style="background: linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%); border-radius: 12px; padding: 20px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🏆</div>
+                    <div style="font-weight: 700; color: #065F46; margin-bottom: 8px;">Mở rộng Vùng Vàng</div>
+                    <div style="font-size: 0.85rem; color: #047857;">
+                        <strong>TP. Thủ Dầu Một</strong> có FR >80% (1H), cần đầu tư mở rộng coverage và tăng supply driver tại đây
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEE2E2 0%, #FECACA 100%); border-radius: 12px; padding: 20px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">🚨</div>
+                    <div style="font-weight: 700; color: #991B1B; margin-bottom: 8px;">Cải thiện Truck FR</div>
+                    <div style="font-size: 0.85rem; color: #7F1D1D;">
+                        FR Truck <strong>42-61%</strong> rất thấp. Cần: tăng driver capacity, tối ưu routing, cải thiện quy trình giao hàng
+                    </div>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #FEF3C7 0%, #FEF9C3 100%); border-radius: 12px; padding: 20px;">
+                    <div style="font-size: 2rem; margin-bottom: 10px;">⚠️</div>
+                    <div style="font-weight: 700; color: #92400E; margin-bottom: 8px;">Focus Thuận An</div>
+                    <div style="font-size: 0.85rem; color: #78350F;">
+                        <strong>Thuận Giao</strong> (FR 67.7%) & <strong>Thuận An</strong> (FR 68.2%) - Volume cao nhưng FR thấp nhất, cần phân tích root cause
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>AHAMOVE</strong> - FP&A Analytics Team</p>
+            <p>Source: Performance Data 2025 - Bình Dương | Generated: January 2026</p>
+        </div>
+    </div>
+</body>
+</html>
